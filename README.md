@@ -16,6 +16,7 @@ Price comparison tool prototype
       padding: 20px; 
       margin: auto; 
       width: 90%; 
+      max-width: 900px; /* keeps everything centered nicely */
       border-radius: 10px; 
     }
 
@@ -33,14 +34,15 @@ Price comparison tool prototype
     }
 
     table { 
-      margin: 20px auto; /* centers table */
-      width: 100%; 
+      margin: 20px auto; 
+      width: 80%; /* 👈 THIS centers visually */
       border-collapse: collapse; 
     }
 
     th, td { 
       border: 1px solid #ddd; 
       padding: 10px; 
+      text-align: center;
     }
 
     .best { 
@@ -149,7 +151,7 @@ function display() {
     row.insertCell(0).innerText = p.store;
     row.insertCell(1).innerText = "₱" + p.finalPrice.toFixed(2);
     row.insertCell(2).innerText = "₱" + p.unitPrice.toFixed(2);
-    row.insertCell(3).innerText = p.rating.toFixed(1) + "/5"; // ✅ fixed
+    row.insertCell(3).innerText = p.rating.toFixed(1) + "/5";
     row.insertCell(4).innerText = p.valueScore.toFixed(2);
     row.insertCell(5).innerText = p.notes;
   });
