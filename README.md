@@ -5,14 +5,52 @@ Price comparison tool prototype
 <head>
   <title>SmartShop Advanced</title>
   <style>
-    body { font-family: Arial; background: #f4f4f4; text-align: center; }
-    .container { background: white; padding: 20px; margin: auto; width: 90%; border-radius: 10px; }
-    input { margin: 5px; padding: 8px; }
-    button { padding: 10px; background: green; color: white; border: none; }
-    table { margin-top: 20px; width: 100%; border-collapse: collapse; }
-    th, td { border: 1px solid #ddd; padding: 10px; }
-    .best { background-color: lightgreen; }
-    .warning { color: red; font-weight: bold; }
+    body { 
+      font-family: Arial; 
+      background: #f4f4f4; 
+      text-align: center; 
+    }
+
+    .container { 
+      background: white; 
+      padding: 20px; 
+      margin: auto; 
+      width: 90%; 
+      border-radius: 10px; 
+    }
+
+    input { 
+      margin: 5px; 
+      padding: 8px; 
+    }
+
+    button { 
+      padding: 10px; 
+      background: green; 
+      color: white; 
+      border: none; 
+      cursor: pointer;
+    }
+
+    table { 
+      margin: 20px auto; /* centers table */
+      width: 100%; 
+      border-collapse: collapse; 
+    }
+
+    th, td { 
+      border: 1px solid #ddd; 
+      padding: 10px; 
+    }
+
+    .best { 
+      background-color: lightgreen; 
+    }
+
+    .warning { 
+      color: red; 
+      font-weight: bold; 
+    }
   </style>
 </head>
 
@@ -29,7 +67,7 @@ Price comparison tool prototype
   <input id="discount" type="number" placeholder="Discount %">
   <input id="quantity" type="number" placeholder="Quantity">
   <input id="shipping" type="number" placeholder="Shipping Fee">
-  <input id="rating" type="number" placeholder="Rating (1-5)">
+  <input id="rating" type="number" placeholder="Rating (0-5)" min="0" max="5" step="0.1">
 
   <br><br>
   <button onclick="addProduct()">Add Product</button>
@@ -60,6 +98,17 @@ function addProduct() {
   let quantity = parseFloat(document.getElementById("quantity").value);
   let shipping = parseFloat(document.getElementById("shipping").value);
   let rating = parseFloat(document.getElementById("rating").value);
+
+  // Validation
+  if (!store || isNaN(price) || isNaN(discount) || isNaN(quantity) || isNaN(shipping) || isNaN(rating)) {
+    alert("Please fill in all fields properly.");
+    return;
+  }
+
+  if (rating < 0 || rating > 5) {
+    alert("Rating must be between 0 and 5.");
+    return;
+  }
 
   let finalPrice = price - (price * discount / 100) + shipping;
   let unitPrice = finalPrice / quantity;
@@ -100,7 +149,7 @@ function display() {
     row.insertCell(0).innerText = p.store;
     row.insertCell(1).innerText = "₱" + p.finalPrice.toFixed(2);
     row.insertCell(2).innerText = "₱" + p.unitPrice.toFixed(2);
-    row.insertCell(3).innerText = p.rating;
+    row.insertCell(3).innerText = p.rating.toFixed(1) + "/5"; // ✅ fixed
     row.insertCell(4).innerText = p.valueScore.toFixed(2);
     row.insertCell(5).innerText = p.notes;
   });
@@ -113,7 +162,7 @@ function showRecommendation() {
 
   document.getElementById("recommendation").innerText =
     "🏆 Best Deal: " + best.store + 
-    " (₱" + best.finalPrice.toFixed(2) + ", Rating: " + best.rating + ")";
+    " (₱" + best.finalPrice.toFixed(2) + ", Rating: " + best.rating.toFixed(1) + "/5)";
 
   let avg = products.reduce((sum, p) => sum + p.finalPrice, 0) / products.length;
   let savings = avg - best.finalPrice;
