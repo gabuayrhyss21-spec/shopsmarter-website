@@ -7,49 +7,65 @@ Price comparison tool prototype
   <style>
     body { 
       font-family: Arial; 
-      background: #f4f4f4; 
+      background: #1B1717; /* Noir Black */
+      color: #EDEBDD; /* Cotton */
       text-align: center; 
     }
 
     .container { 
-      background: white; 
+      background: #630000; /* Maroon */
       padding: 20px; 
       margin: auto; 
       width: 90%; 
       border-radius: 10px; 
+      color: #EDEBDD;
     }
 
     input { 
       margin: 5px; 
       padding: 8px; 
+      border: 1px solid #EDEBDD; 
+      background: #1B1717; 
+      color: #EDEBDD;
     }
 
     button { 
       padding: 10px; 
-      background: green; 
-      color: white; 
+      background: #810100; /* Cherry Red accent */
+      color: #EDEBDD; 
       border: none; 
       cursor: pointer;
+      border-radius: 5px;
+    }
+
+    button:hover {
+      background: #A00000; /* Slightly brighter red on hover */
     }
 
     table { 
-      margin: 20px auto; /* centers table */
+      margin: 20px auto; 
       width: 100%; 
       border-collapse: collapse; 
+      background: #1B1717; 
+      color: #EDEBDD;
     }
 
     th, td { 
-      border: 1px solid #ddd; 
+      border: 1px solid #EDEBDD; 
       padding: 10px; 
     }
 
     .best { 
-      background-color: lightgreen; 
+      background-color: #810100; /* Cherry Red highlight */
+      color: #EDEBDD;
     }
 
     .warning { 
-      color: red; 
+      color: #EDEBDD; 
       font-weight: bold; 
+      background: #630000;
+      padding: 3px;
+      border-radius: 3px;
     }
   </style>
 </head>
@@ -149,7 +165,7 @@ function display() {
     row.insertCell(0).innerText = p.store;
     row.insertCell(1).innerText = "₱" + p.finalPrice.toFixed(2);
     row.insertCell(2).innerText = "₱" + p.unitPrice.toFixed(2);
-    row.insertCell(3).innerText = p.rating.toFixed(1) + "/5"; // ✅ fixed
+    row.insertCell(3).innerText = p.rating.toFixed(1) + "/5";
     row.insertCell(4).innerText = p.valueScore.toFixed(2);
     row.insertCell(5).innerText = p.notes;
   });
