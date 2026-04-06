@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SmartShop Home</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #1B1717;
+      color: #EDEBDD;
+      overflow-x: hidden;
+    }
+
+    /* Sidebar button */
+    .sidebar-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: #630000;
+      color: #EDEBDD;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 1001;
+    }
+    .sidebar-btn:hover { background: #810100; }
+
+    /* Info panel */
+    .info-panel {
+      position: fixed;
+      top: 0;
+      left: -300px;
+      width: 300px;
+      height: 100%;
+      background: #1B1717; /* Noir Black */
+      color: #EDEBDD;
+      padding: 20px;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.5);
+      transition: left 0.3s ease;
+      z-index: 1000;
+      overflow-y: auto;
+    }
+    .info-panel.active { left: 0; }
+
+    .info-panel h2, .info-panel p, .info-links, .close-btn { display: none; }
+    .info-panel.active h2, 
+    .info-panel.active p, 
+    .info-panel.active .info-links, 
+    .info-panel.active .close-btn { display: block; }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: #EDEBDD;
+      font-size: 20px;
+      cursor: pointer;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+
+    .info-links {
+      margin-top: 20px;
+      font-size: 0.9em;
+    }
+    .info-links a {
+      color: #EDEBDD;
+      margin: 0 5px;
+      text-decoration: none;
+    }
+    .info-links a:hover { color: #810100; }
+
+    /* Main homepage wrapper */
+    .main-wrapper { transition: transform 0.3s ease; }
+    .main-wrapper.shifted { transform: translateX(300px); }
+
+    /* Hero section */
+    .hero {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #630000 40%, #1B1717 100%);
+      color: #EDEBDD;
+    }
+    h1 { font-size: 3em; margin-bottom: 10px; }
+    h2 { font-size: 1.5em; margin-bottom: 30px; font-weight: normal; }
+
+    .cta-button {
+      padding: 15px 30px;
+      background: #810100;
+      color: #EDEBDD;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.2em;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+    .cta-button:hover { background: #A00000; transform: scale(1.05); }
+
+    .features {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-top: 50px;
+    }
+    .feature {
+      background: #1B1717;
+      border: 2px solid #630000;
+      border-radius: 10px;
+      padding: 20px;
+      width: 200px;
+      box-shadow: 0 0 10px rgba(129,1,0,0.5);
+    }
+    .feature h3 { margin-bottom: 10px; color: #EDEBDD; }
+
+    /* Compare page */
+    .compare-page {
+      display: none; /* hidden until Start Comparing is pressed */
+      height: 100vh;
+      background: #1B1717;
+      color: #EDEBDD;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .compare-page h2 { font-size: 2em; margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar button -->
+  <button class="sidebar-btn" id="aboutBtn" onclick="openPanel()">ℹ About Site</button>
+
+  <!-- Info panel -->
+  <div class="info-panel" id="infoPanel">
+    <button class="close-btn" onclick="closePanel()">✖</button>
+    <h2>About SmartShop</h2>
+    <p>
+      This site is designed to help online shoppers make smarter decisions by addressing common problems in e-commerce. 
+      Many consumers struggle with misleading discounts, confusing product sizes, and a lack of price transparency. 
+      By applying mathematical concepts such as percentages, unit pricing, value comparison, and quality-to-price ratio, this site ensures that buyers can clearly see the true cost of products and make rational, informed choices.
+    </p>
+    <div class="info-links">
+      <a href="#">Contact</a> | 
+      <a href="#">Privacy Policy</a>
+    </div>
+  </div>
+
+  <!-- Homepage content -->
+<!-- Homepage content -->
+<div id="homePage">
+  <div class="main-wrapper" id="mainWrapper">
+    <div class="hero">
+      <h1>🛒 Welcome to SmartShop</h1>
+      <h2>Compare smarter, save bigger.</h2>
+      <button class="cta-button" onclick="goToCompare()">Start Comparing</button>
+
+      <div class="features">
+        <div class="feature">
+          <h3>💰 Save More</h3>
+          <p>Instantly see the best deals.</p>
+        </div>
+        <div class="feature">
+          <h3>⚖ Compare Easily</h3>
+          <p>Side-by-side product breakdowns.</p>
+        </div>
+        <div class="feature">
+          <h3>⭐ Trusted Ratings</h3>
+          <p>Make decisions based on reviews.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Compare page -->
+<div class="compare-page" id="comparePage">
+  <div class="compare-box">
+    <h2> 🛒 SmartShop Product Entry</h2>
+
+    <!-- Input fields -->
+    <div class="input-group">
+      <input id="store" placeholder="Store">
+      <input id="brand" placeholder="Brand">
+      <input id="price" type="number" placeholder="Original Price">
+      <input id="discount" type="number" placeholder="Discount %">
+      <input id="quantity" type="number" placeholder="Quantity">
+      <input id="shipping" type="number" placeholder="Shipping Fee">
+      <input id="rating" type="number" placeholder="Rating (0-5)" min="0" max="5" step="0.1">
+    </div>
+
+    <button class="tool-btn" onclick="addProduct()">➕ Add Product</button>
+
+    <!-- Display entered products -->
+    <div id="infoDisplay" class="info-display"></div>
+
+    <!-- Done button -->
+    <div class="done-container">
+      <button class="done-btn" onclick="finishEntry()">✔ Done</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .compare-page {
+    display: none;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1B1717 40%, #630000 100%);
+    color: #EDEBDD;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+  }
+  .compare-box {
+    background: #1B1717;
+    border: 3px solid #810100;
+    border-radius: 15px;
+    padding: 30px;
+    width: 90%;
+    max-width: 700px;
+    text-align: center;
+    box-shadow: 0 0 25px rgba(129,1,0,0.8), 0 0 40px rgba(99,0,0,0.6);
+    transition: transform 0.3s ease;
+    position: relative;
+  }
+  .compare-box:hover { transform: scale(1.02); }
+  .input-group { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 15px; }
+  .compare-box input {
+    flex: 1 1 200px; padding: 10px; border: 1px solid #EDEBDD; border-radius: 6px;
+    background: #1B1717; color: #EDEBDD; transition: border 0.3s ease, box-shadow 0.3s ease;
+  }
+  .compare-box input:focus { border-color: #810100; box-shadow: 0 0 10px rgba(129,1,0,0.7); outline: none; }
+  .tool-btn {
+    padding: 12px 25px; background: linear-gradient(135deg, #810100, #A00000); color: #EDEBDD;
+    border: none; cursor: pointer; border-radius: 8px; font-size: 1em; font-weight: bold;
+    transition: background 0.3s ease, transform 0.2s ease; margin-bottom: 20px;
+  }
+  .tool-btn:hover { background: #A00000; transform: scale(1.05); }
+  .info-display {
+    margin-top: 20px; padding: 15px; background: #1B1717; border: 2px solid #630000;
+    border-radius: 10px; color: #EDEBDD; text-align: left; box-shadow: 0 0 15px rgba(129,1,0,0.6);
+  }
+  .info-display h3 { margin-bottom: 10px; color: #810100; }
+  .info-display p { margin: 5px 0; }
+  .info-display hr { border: 1px solid #630000; margin: 10px 0; }
+  .delete-btn {
+    background: #810100; color: #EDEBDD; border: none; border-radius: 6px;
+    padding: 5px 10px; cursor: pointer; font-size: 0.9em; margin-top: 5px;
+    transition: background 0.3s ease;
+  }
+  .delete-btn:hover { background: #A00000; }
+  .done-container { position: absolute; bottom: 15px; right: 15px; }
+  .done-btn {
+    padding: 10px 20px; background: #630000; color: #EDEBDD; border: none; border-radius: 8px;
+    cursor: pointer; font-weight: bold; transition: background 0.3s ease, transform 0.2s ease;
+  }
+  .done-btn:hover { background: #810100; transform: scale(1.05); }
+</style>
+
+<script>
+  //  Main page button functions
+  function openPanel() {
+    document.getElementById("infoPanel").classList.add("active");
+    document.getElementById("mainWrapper").classList.add("shifted");
+    document.getElementById("aboutBtn").style.display = "none";
+  }
+
+  function closePanel() {
+    document.getElementById("infoPanel").classList.remove("active");
+    document.getElementById("mainWrapper").classList.remove("shifted");
+    document.getElementById("aboutBtn").style.display = "block";
+  }
+
+  function goToCompare() {
+    document.getElementById("mainWrapper").style.display = "none";
+    document.getElementById("aboutBtn").style.display = "none";
+    document.getElementById("infoPanel").style.display = "none";
+    document.getElementById("comparePage").style.display = "flex";
+  }
+
+  // Compare page logic
+  let products = [];
+
+  function addProduct() {
+    let store = document.getElementById("store").value;
+    let brand = document.getElementById("brand").value;
+    let price = document.getElementById("price").value;
+    let discount = document.getElementById("discount").value;
+    let quantity = document.getElementById("quantity").value;
+    let shipping = document.getElementById("shipping").value;
+    let rating = document.getElementById("rating").value;
+
+    if (!store || !brand || !price || !discount || !quantity || !shipping || !rating) {
+      alert("Please fill in all fields.");
+      return;
+    }
+
+    let productInfo = { store, brand, price, discount, quantity, shipping, rating };
+    products.push(productInfo);
+
+    displayProducts();
+
+    // Clear inputs
+    document.querySelectorAll('.input-group input').forEach(input => input.value = "");
+  }
+
+  function displayProducts() {
+    let infoDiv = document.getElementById("infoDisplay");
+    infoDiv.innerHTML = "<h3> Entered Products</h3>";
+    products.forEach((p, index) => {
+      infoDiv.innerHTML += `
+        <p><strong>Product ${index+1}</strong></p>
+        <p>Store: ${p.store}</p>
+        <p>Brand: ${p.brand}</p>
+        <p>Original Price: ₱${p.price}</p>
+        <p>Discount: ${p.discount}%</p>
+        <p>Quantity: ${p.quantity}</p>
+        <p>Shipping Fee: ₱${p.shipping}</p>
+        <p>Rating: ${p.rating}/5</p>
+        <button class="delete-btn" onclick="deleteProduct(${index})"> Delete</button>
+        <hr>
+      `;
+    });
+  }
+
+  function deleteProduct(index) {
+    products.splice(index, 1);
+    displayProducts();
+  }
+
+  //  Done button now shows result panel with summary
+  function finishEntry() {
+    document.getElementById("comparePage").style.display = "none";
+    document.getElementById("resultPanel").style.display = "flex";
+
+    let resultBox = document.querySelector("#resultPanel .result-box");
+    resultBox.innerHTML = "<h2> Product Entry Finished</h2><h3>Summary of Products</h3>";
+
+    if (products.length === 0) {
+      resultBox.innerHTML += "<p>No products were entered.</p>";
+    } else {
+      products.forEach((p, index) => {
+        resultBox.innerHTML += `
+          <p><strong>Product ${index+1}</strong></p>
+          <p>Store: ${p.store}</p>
+          <p>Brand: ${p.brand}</p>
+          <p>Original Price: ₱${p.price}</p>
+          <p>Discount: ${p.discount}%</p>
+          <p>Quantity: ${p.quantity}</p>
+          <p>Shipping Fee: ₱${p.shipping}</p>
+          <p>Rating: ${p.rating}/5</p>
+          <hr>
+        `;
+      });
+    }
+  }
+</script>
+<!-- Result Panel -->
+<div class="result-page" id="resultPanel" style="display:none;">
+  <div class="result-box">
+    <h2>📊 Product Comparison Results</h2>
+    <div id="comparisonDisplay" class="comparison-display"></div>
+    <div class="done-container">
+      <button class="done-btn" onclick="goBackHome()">⬅ Back to Home</button>
+    </div>
+  </div>
+</div>
+
+
+<style>
+  .result-page {
+    display: none;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #630000 40%, #1B1717 100%);
+    color: #EDEBDD;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+  }
+  .result-box {
+    background: #1B1717;
+    border: 3px solid #810100;
+    border-radius: 15px;
+    padding: 30px;
+    width: 90%;
+    max-width: 700px;
+    text-align: center;
+    box-shadow: 0 0 25px rgba(129,1,0,0.8), 0 0 40px rgba(99,0,0,0.6);
+    transition: transform 0.3s ease;
+    position: relative;
+  }
+  .result-box:hover { transform: scale(1.02); }
+  .comparison-display {
+    margin-top: 20px;
+    padding: 15px;
+    background: #1B1717;
+    border: 2px solid #630000;
+    border-radius: 10px;
+    text-align: left;
+    box-shadow: 0 0 15px rgba(129,1,0,0.6);
+  }
+  .comparison-display h3 { margin-bottom: 10px; color: #810100; }
+  .comparison-display p { margin: 5px 0; }
+  .comparison-display hr { border: 1px solid #630000; margin: 10px 0; }
+
+  /* Highlight cheapest product */
+  .highlight {
+    border: 2px solid #FFD700;
+    box-shadow: 0 0 15px #FFD700;
+    padding: 10px;
+    border-radius: 8px;
+    background: #2a1a1a;
+  }
+</style>
+
+<script>
+  // Result Page logic
+  function finishEntry() {
+  document.getElementById("comparePage").style.display = "none";
+  document.getElementById("resultPanel").style.display = "flex";
+
+  let comparisonDiv = document.getElementById("comparisonDisplay");
+  comparisonDiv.innerHTML = "<h3>Comparison of Entered Products</h3>";
+
+  if (products.length === 0) {
+    comparisonDiv.innerHTML += "<p>No products were entered.</p>";
+    return;
+  }
+
+  // Compute final cost for each product
+  let costs = products.map(p => {
+    let discountedPrice = p.price - (p.price * (p.discount / 100));
+    let totalCost = (discountedPrice * p.quantity) + parseFloat(p.shipping);
+    return totalCost;
+  });
+
+  // Display products with totals
+  products.forEach((p, index) => {
+    let discountedPrice = p.price - (p.price * (p.discount / 100));
+    let totalCost = (discountedPrice * p.quantity) + parseFloat(p.shipping);
+
+    comparisonDiv.innerHTML += `
+      <p><strong>Product ${index+1}</strong></p>
+      <p>Store: ${p.store}</p>
+      <p>Brand: ${p.brand}</p>
+      <p>Original Price: ₱${p.price}</p>
+      <p>Discount: ${p.discount}% → Final Price: ₱${discountedPrice.toFixed(2)}</p>
+      <p>Quantity: ${p.quantity}</p>
+      <p>Shipping Fee: ₱${p.shipping}</p>
+      <p><strong>Total Cost: ₱${totalCost.toFixed(2)}</strong></p>
+      <p>Rating: ${p.rating}/5</p>
+      <hr>
+    `;
+  });
+
+  //  Decide best product or equal outcome
+  let minCost = Math.min(...costs);
+  let winners = costs.filter(c => c === minCost);
+
+  if (winners.length === costs.length) {
+    comparisonDiv.innerHTML += "<p>⚖ All products cost the same — no best option to recommend.</p>";
+  } else {
+    let bestIndex = costs.indexOf(minCost);
+    comparisonDiv.innerHTML += `<p>⭐ Best option: Product ${bestIndex+1} with lowest cost ₱${minCost.toFixed(2)}</p>`;
+  }
+}
+
+
+  function goBackHome() {
+  // Hide other panels
+  document.getElementById("resultPanel").style.display = "none";
+  document.getElementById("comparePage").style.display = "none";
+
+  // Show homepage hero again
+  document.getElementById("mainWrapper").style.display = "block";
+
+  // Restore the sidebar button and info panel system
+  document.getElementById("aboutBtn").style.display = "block";   // ℹ button
+  document.getElementById("infoPanel").style.display = "block";  // panel container
+  document.getElementById("infoPanel").classList.remove("active"); // reset panel closed
+
+  // Clear previous results
+  document.getElementById("comparisonDisplay").innerHTML = "";
+
+  // Clear all inputs inside comparePage
+  let inputs = document.querySelectorAll("#comparePage input");
+  inputs.forEach(input => input.value = "");
+
+  // Reset product list and clear display
+  products = []; // empty the array
+  let infoDiv = document.getElementById("infoDisplay");
+  if (infoDiv) {
+    infoDiv.innerHTML = ""; // clear entered products section
+  }
+}
+</script>
+</body>
+</html>
+
